@@ -3,7 +3,9 @@ mod utils;
 extern crate serde_json;
 extern crate wasm_bindgen;
 
-use forceatlas2::{Layout, Nodes, Settings};
+use forceatlas2::{Coord, Layout, Nodes, Settings};
+use serde::{Deserialize, Deserializer, Serialize};
+use serde_derive::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 // #[macro_use]
@@ -25,9 +27,36 @@ pub fn greet() {
     alert("Hello, forceatlas2-wasm!");
 }
 
+// struct SimpleStruct {
+
+// }
+
+// #[derive(Serialize, Deserialize)]
+// struct LayoutSettings<T: Coord>(Settings<T>);
+
+// impl<'de> Deserialize<'de> for LayoutSettings<f32> {
+//     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+//     where
+//         D: Deserializer<'de>,
+//     {
+//         //    #[derive(Deserialize)]
+//         //    #[serde(field_identifier, rename_all = "lowercase")]
+//         //    enum Field { Secs, Nanos }
+//     }
+// }
+
 #[wasm_bindgen]
-pub fn generate_layout(array: JsValue) -> String {
-    let elements: Vec<usize> = array.into_serde().unwrap();
+pub fn generate_layout(elements_raw: JsValue, setting_raw: JsValue) -> String {
+    let elements: Vec<usize> = elements_raw
+        .into_serde()
+        .expect("Values should be an array of integer pairs");
+
+    // let setting = setting_raw.into_serde::<LayoutSettings<f32>>().ok();
+
+    // let setting: Settings = match setting_raw.into_serde<Settings>() {
+    //     None => None,
+    //     Some(raw_value) => raw_value.into_serde().expect("Values should be Settings")
+    // };
 
     // let original_edges = vec![(0, 1), (2, 3), (1, 3)];
     let original_edges = elements
